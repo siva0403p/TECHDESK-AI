@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev",
+			"path": "Frontend",
+			"problemMatcher": [],
+			"label": "npm: dev - Frontend",
+			"detail": "vite",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
