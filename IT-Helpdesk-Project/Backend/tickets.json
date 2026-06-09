@@ -150,5 +150,13 @@
     "confidence": 0.83,
     "status": "Closed",
     "timestamp": "2026-04-23 14:32:49"
+  },
+  {
+    "ticket_id": "TKT-20260609-0020",
+    "query": "outlook crashing",
+    "matched_question": "outlook crashing",
+    "confidence": 1,
+    "status": "Open",
+    "timestamp": "2026-06-09 13:18:34"
   }
 ]
