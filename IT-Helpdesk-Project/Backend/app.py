@@ -7,6 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import re
 import uuid
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -200,5 +201,6 @@ def close_ticket():
         return jsonify({"status": "error"})
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
