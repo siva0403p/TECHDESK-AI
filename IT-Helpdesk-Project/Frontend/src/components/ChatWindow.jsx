@@ -51,7 +51,7 @@ export default function ChatWindow() {
     debounceTimer.current = setTimeout(async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:5000/suggest?q=${encodeURIComponent(value)}`
+          `https://techdesk-ai.onrender.com/suggest?q=${encodeURIComponent(value)}`
         );
         const data = await res.json();
         setSuggestions(data);
@@ -123,7 +123,7 @@ export default function ChatWindow() {
     setIsTyping(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/chat", {
+      const response = await fetch("https://techdesk-ai.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
@@ -182,7 +182,7 @@ export default function ChatWindow() {
   async function sendFeedback(msgIndex, type) {
     const msg = messages[msgIndex];
     try {
-      await fetch("http://127.0.0.1:5000/feedback", {
+      await fetch("https://techdesk-ai.onrender.com/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -206,7 +206,7 @@ export default function ChatWindow() {
   async function raiseTicket(msgIndex) {
     const msg = messages[msgIndex];
     try {
-      const res = await fetch("http://127.0.0.1:5000/ticket", {
+      const res = await fetch("https://techdesk-ai.onrender.com/ticket", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
