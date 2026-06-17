@@ -145,6 +145,9 @@ def suggest():
 def create_ticket():
     data = request.get_json()
 
+    print("TICKET REQUEST RECEIVED")
+    print(data)
+
     try:
         with open(TICKETS_FILE, 'r') as f:
             tickets = json.load(f)
@@ -164,8 +167,10 @@ def create_ticket():
 
     tickets.append(ticket)
 
+    print("Saving ticket:", ticket)
+
     with open(TICKETS_FILE, 'w') as f:
-        json.dump(tickets, f, indent=2)
+        json.dump(tickets, f, indent=2)c
 
     return jsonify({"ticket_id": ticket_number, "status": "Open"})
 
