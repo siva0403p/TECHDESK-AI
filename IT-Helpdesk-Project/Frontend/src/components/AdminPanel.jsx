@@ -34,7 +34,8 @@ export default function AdminPanel() {
   async function fetchTickets() {
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/tickets");
+      const res = await fetch(
+  "https://techdesk-ai.onrender.com/tickets" );
       const data = await res.json();
       setTickets(data);
     } catch {
@@ -45,11 +46,14 @@ export default function AdminPanel() {
 
   async function closeTicket(ticketId) {
     try {
-      await fetch("http://127.0.0.1:5000/ticket/close", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ticket_id: ticketId }),
-      });
+      await fetch(
+  "https://techdesk-ai.onrender.com/ticket/close",
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ticket_id: ticketId }),
+  }
+);
       // Update locally
       setTickets((prev) =>
         prev.map((t) =>
