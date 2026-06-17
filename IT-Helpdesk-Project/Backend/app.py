@@ -40,9 +40,17 @@ db = client["techdesk_ai"]
 tickets_collection = db["tickets"]
 feedback_collection = db["feedback"]
 
-# Load knowledge base
-with open('knowledge_base.json', 'r') as f:
-    raw_data = json.load(f)
+try:
+    print("BEFORE KNOWLEDGE BASE")
+
+    with open('knowledge_base.json', 'r') as f:
+        raw_data = json.load(f)
+
+    print("KNOWLEDGE BASE LOADED")
+
+except Exception as e:
+    print("KNOWLEDGE BASE ERROR:", e)
+    raise
 
 # Clean duplicate keys
 faq_data = {}
