@@ -11,6 +11,17 @@ import os
 
 app = Flask(__name__)
 CORS(app)
+from pymongo import MongoClient
+import os
+
+MONGO_URI = os.environ.get("MONGO_URI")
+
+client = MongoClient(MONGO_URI)
+
+db = client["techdesk_ai"]
+
+tickets_collection = db["tickets"]
+feedback_collection = db["feedback"]
 
 # Load knowledge base
 with open('knowledge_base.json', 'r') as f:
@@ -25,8 +36,6 @@ for key, value in raw_data.items():
 
 faq_questions = list(faq_data.keys())
 
-FEEDBACK_FILE = "feedback_log.json"
-TICKETS_FILE = "tickets.json"
 
 # Build TF-IDF vectors once at startup
 vectorizer = TfidfVectorizer(stop_words='english')
@@ -84,8 +93,7 @@ def feedback():
         "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
-    with open(FEEDBACK_FILE, "a") as f:
-        f.write(json.dumps(entry) + "\n")
+    feedback_collection.insert_one(entry)
 
     return jsonify({"status": "success"})
 
@@ -145,16 +153,9 @@ def suggest():
 def create_ticket():
     data = request.get_json()
 
-    print("TICKET REQUEST RECEIVED")
-    print(data)
+    count = tickets_collection.count_documents({})
 
-    try:
-        with open(TICKETS_FILE, 'r') as f:
-            tickets = json.load(f)
-    except FileNotFoundError:
-        tickets = []
-
-    ticket_number = f"TKT-{datetime.datetime.now().strftime('%Y%m%d')}-{str(len(tickets) + 1).zfill(4)}"
+    ticket_number = f"TKT-{datetime.datetime.now().strftime('%Y%m%d')}-{str(count + 1).zfill(4)}"
 
     ticket = {
         "ticket_id": ticket_number,
@@ -165,47 +166,34 @@ def create_ticket():
         "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
-    tickets.append(ticket)
+    tickets_collection.insert_one(ticket)
 
-    print("Saving ticket:", ticket)
-
-    with open(TICKETS_FILE, 'w') as f:
-        json.dump(tickets, f, indent=2)
-
-    return jsonify({"ticket_id": ticket_number, "status": "Open"})
+    return jsonify({
+        "ticket_id": ticket_number,
+        "status": "Open"
+    })
 
 
 @app.route('/tickets', methods=['GET'])
 def get_tickets():
-    try:
-        with open(TICKETS_FILE, 'r') as f:
-            tickets = json.load(f)
-        return jsonify(tickets)
-    except FileNotFoundError:
-        return jsonify([])
+
+    tickets = list(
+        tickets_collection.find({}, {"_id": 0})
+    )
+
+    return jsonify(tickets)
 
 
 @app.route('/ticket/close', methods=['POST'])
 def close_ticket():
+
     data = request.get_json()
+
     ticket_id = data.get("ticket_id")
 
-    try:
-        with open(TICKETS_FILE, 'r') as f:
-            tickets = json.load(f)
+    tickets_collection.update_one(
+        {"ticket_id": ticket_id},
+        {"$set": {"status": "Closed"}}
+    )
 
-        for t in tickets:
-            if t["ticket_id"] == ticket_id:
-                t["status"] = "Closed"
-
-        with open(TICKETS_FILE, 'w') as f:
-            json.dump(tickets, f, indent=2)
-
-        return jsonify({"status": "success"})
-    except FileNotFoundError:
-        return jsonify({"status": "error"})
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    return jsonify({"status": "success"})
