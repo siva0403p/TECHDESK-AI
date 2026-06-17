@@ -222,3 +222,15 @@ def close_ticket():
     )
 
     return jsonify({"status": "success"})
+
+if __name__ == "__main__":
+    print("ENTERED MAIN")
+
+    port = int(os.environ.get("PORT", 5000))
+
+    print("PORT =", port)
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )
