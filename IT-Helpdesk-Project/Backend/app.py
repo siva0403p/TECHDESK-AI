@@ -11,12 +11,29 @@ import os
 
 app = Flask(__name__)
 CORS(app)
+
 from pymongo import MongoClient
 import os
+print("APP STARTING...")
 
 MONGO_URI = os.environ.get("MONGO_URI")
 
+print("MONGO_URI EXISTS:", MONGO_URI is not None)
+print("MONGO_URI VALUE:", MONGO_URI)
+
 client = MongoClient(MONGO_URI)
+
+print("MONGO CONNECTED")
+
+MONGO_URI = os.environ.get("MONGO_URI")
+print("MONGO_URI =", MONGO_URI)
+
+try:
+    client = MongoClient(MONGO_URI)
+    print("Mongo connected")
+except Exception as e:
+    print("Mongo error:", e)
+    raise
 
 db = client["techdesk_ai"]
 
