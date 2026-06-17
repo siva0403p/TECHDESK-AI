@@ -170,7 +170,7 @@ def create_ticket():
     print("Saving ticket:", ticket)
 
     with open(TICKETS_FILE, 'w') as f:
-        json.dump(tickets, f, indent=2)c
+        json.dump(tickets, f, indent=2)
 
     return jsonify({"ticket_id": ticket_number, "status": "Open"})
 
