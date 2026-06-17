@@ -1,3 +1,5 @@
 scikit-learn
 flask
 flask-cors
+pymongo
+dnspython
